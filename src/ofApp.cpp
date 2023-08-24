@@ -20,6 +20,8 @@ void ofApp::setup(){
 
 	std::cout << gameObjects.size() << "\n";
 
+	imgHogar.load("casa.png");
+
 }
 
 //--------------------------------------------------------------
@@ -51,6 +53,9 @@ void ofApp::update()
 void ofApp::draw(){
 	ofBackground(ofColor::cornflowerBlue);
 
+	//dibujar los objetos del fondo como la casa
+	imgHogar.draw(200, ofGetHeight() - imgHogar.getHeight());
+
 	ofSetColor(240, 12, 12);
 	ofCircle(posx, posy, radioCirculo);
 
@@ -61,6 +66,8 @@ void ofApp::draw(){
 			gameObjects[i].draw();
 		}
 	}
+
+
 
 }
 
@@ -89,8 +96,16 @@ void ofApp::mouseDragged(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
+void ofApp::mousePressed(int x, int y, int button)
+{
+	if (x >= 0 && y >= 0 && x <= ofGetWidth() && y <= ofGetHeight())
+	{
+		//spawnear (engendrar) un objeto nuevo y agregarlo a la losta
+		Entity newEntity = Entity();
+		newEntity.position->x = x;
+		newEntity.position->y = y;
+		gameObjects.push_back(newEntity);
+	}
 }
 
 //--------------------------------------------------------------
