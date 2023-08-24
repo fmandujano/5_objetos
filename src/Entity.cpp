@@ -10,6 +10,9 @@ Entity::Entity()
 	std::mt19937 gen(randomizer());
 	std::uniform_int_distribution<int> dist(10000, 99999);
 	name = e.append(std::to_string(dist(gen)));
+	position = new ofVec2f(0, 0);
+	velocity = new ofVec2f(0, 0);
+
 }
 
 const char* Entity::toString()
@@ -20,5 +23,5 @@ const char* Entity::toString()
 void Entity::draw()
 {
 	ofSetColor(240, 240, 240);
-	ofCircle(posX, posY, 25);
+	ofCircle(position->x, position->y, 25);
 }

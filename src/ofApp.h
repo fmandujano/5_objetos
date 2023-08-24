@@ -27,6 +27,8 @@ class ofApp : public ofBaseApp{
 		float posx;
 		float posy;
 
+		float gravity = 9.81f * 200; //escala a 200 px por metro
+
 		float radioCirculo;
 
 		std::vector<Entity> gameObjects;

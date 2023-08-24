@@ -7,13 +7,16 @@ void ofApp::setup(){
 	radioCirculo = 20;
 
 	Entity e = Entity();
-	e.posX = 100;
-	e.posY = 100;
+	e.position->x = 100;
+	e.position->y = 100;
+	e.velocity -> x = 10;
 	gameObjects.push_back(e);
 	Entity e2 = Entity();
-	e2.posX = 150;
-	e2.posY = 150;
+	e2.position->x = 150;
+	e2.position->y = 150;
 	gameObjects.push_back(e2);
+
+	e2.velocity->x = 10;
 
 	std::cout << gameObjects.size() << "\n";
 
@@ -25,8 +28,22 @@ void ofApp::update()
 	//mover les entidades
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		gameObjects[i].posX += 1 * ofGetLastFrameTime();
-		gameObjects[i].posY += 2 * ofGetLastFrameTime();
+
+		//aplicar la aceleracion de la gravedad en el espacio
+		gameObjects[i].velocity->y += gravity * ofGetLastFrameTime();
+
+
+		//colision y rebote con el piso
+		if (gameObjects[i].position->y >= ofGetHeight())
+		{
+			gameObjects[i].position->y = ofGetHeight();
+			gameObjects[i].velocity->y *= -0.9;
+
+		}
+
+		//aplicar la velocidad como posicion
+		gameObjects[i].position->x += gameObjects[i].velocity->x * ofGetLastFrameTime();
+		gameObjects[i].position->y += gameObjects[i].velocity->y * ofGetLastFrameTime();
 	}
 }
 
