@@ -4,6 +4,7 @@
 #include <vector>
 #include "Entity.h"
 #include "ofxGui.h"
+#include <list> //std::list, lista ligada
 
 class ofApp : public ofBaseApp{
 
@@ -47,6 +48,8 @@ class ofApp : public ofBaseApp{
 		} appstate ;
 
 		//cosas del UI
+		ofTrueTypeFont titleFont;
+		ofTrueTypeFont uiFont;
 		ofxPanel mainmenu;
 		ofxButton btnEjercicio1, btnEjercicio2;
 
@@ -61,5 +64,7 @@ class ofApp : public ofBaseApp{
 		ofVec2f playerSpriteOffset;
 		//inputs del jugador
 		bool w, s, a, d;
-
+		//inventario, es una lista ligada
+		std::list<Entity> inventory;
+		Entity* currItem;
 };

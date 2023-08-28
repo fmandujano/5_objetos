@@ -19,6 +19,9 @@ void ofApp::setup()
 	//establecer el primer estado de la app
 	appstate = EAppState::menu;
 
+	titleFont.load("press.ttf", 24);
+	uiFont.load("press.ttf", 12);
+
 	mainmenu.setup();
 	mainmenu.add(btnEjercicio1.setup("Pelotas rebotando"));
 	mainmenu.add(btnEjercicio2.setup("Tipo Lemmings"));
@@ -57,6 +60,17 @@ void ofApp::setupLemmings()
 	//tamaño del jugador
 	playerSize = ofVec2f(28, 42);
 	playerSpriteOffset = ofVec2f(2, 4);
+	//inventory
+	Entity hands = Entity();
+	hands.name = "MANOS";
+	inventory.push_back(hands);
+	Entity spada = Entity();
+	spada.name = "ESPADA";
+	inventory.push_back(spada);
+	Entity veneno = Entity();
+	veneno.name = "BENENO";
+	inventory.push_back(veneno);
+	currItem = &hands;
 }
 
 //--------------------------------------------------------------
@@ -124,6 +138,9 @@ void ofApp::updateLemmings()
 		posx += 100 * ofGetLastFrameTime();
 		playerSpriteOffset = ofVec2f(34, 148);
 	}
+
+	//currItem = &inventory.front();  //front obtiene el primer item
+	currItem = &inventory.back();  //back obtiene el ultimo item
 }
 
 //--------------------------------------------------------------
@@ -153,11 +170,20 @@ void ofApp::draw()
 	else if (appstate == EAppState::lemmings)
 	{
 		ofBackground(ofColor::lightGray);
+		ofSetColor(2, 2, 1);
+		titleFont.drawString("std::list inventory example", 100, 100);
+
 		//ofCircle(posx, posy, radioCirculo);
 		//playerSpriteImg.draw(posx, posy);
+		ofSetColor(255, 255, 255);
 		playerSpriteImg.drawSubsection(posx, posy, 
 			playerSize.x, playerSize.y,
 			playerSpriteOffset.x, playerSpriteOffset.y);
+
+		//poner el nombre del item actual
+		ofSetColor(255, 255, 0);
+
+		uiFont.drawString( currItem==nullptr?"NULL":currItem->name.c_str(), posx, posy);
 	}
 }
 
@@ -168,6 +194,22 @@ void ofApp::keyPressed(int key)
 	if (key == 'a') a = true;
 	if (key == 's') s = true;
 	if (key == 'd') d = true;
+
+	if (appstate == EAppState::lemmings)
+	{
+		//inventory
+		if (key == 57357)
+		{
+			std::cout << "item anterior " << key << "\n";
+
+		}
+		if (key == 57359)
+		{
+			std::cout << "item siguiente " << key << "\n";
+		}
+	}
+
+	
 }
 
 //--------------------------------------------------------------
