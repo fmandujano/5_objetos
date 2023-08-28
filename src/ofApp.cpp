@@ -1,15 +1,39 @@
 #include "ofApp.h"
 
-//--------------------------------------------------------------
-void ofApp::setup(){
-	posx = 0;
-	posy = 0;
-	radioCirculo = 20;
+void ofApp::onBtn1Pressed()
+{
+	std::cout << "boton 1 \n";
+	appstate = EAppState::pelotas;
+	setupPelotas();
+}
 
+void ofApp::onBtn2Pressed()
+{
+	std::cout << "boton 2 \n";
+	appstate = EAppState::lemmings;
+	setupLemmings();
+}
+
+void ofApp::setup()
+{
+	//establecer el primer estado de la app
+	appstate = EAppState::menu;
+
+	mainmenu.setup();
+	mainmenu.add(btnEjercicio1.setup("Pelotas rebotando"));
+	mainmenu.add(btnEjercicio2.setup("Tipo Lemmings"));
+	mainmenu.setPosition(ofGetWidth() / 2 - mainmenu.getWidth() / 2,
+							ofGetHeight() / 2 - mainmenu.getHeight() / 2);
+	btnEjercicio1.addListener(this, &ofApp::onBtn1Pressed );
+	btnEjercicio2.addListener(this, &ofApp::onBtn2Pressed );
+}
+
+void ofApp::setupPelotas()
+{
 	Entity e = Entity();
 	e.position->x = 100;
 	e.position->y = 100;
-	e.velocity -> x = 10;
+	e.velocity->x = 10;
 	gameObjects.push_back(e);
 	Entity e2 = Entity();
 	e2.position->x = 150;
@@ -21,11 +45,38 @@ void ofApp::setup(){
 	std::cout << gameObjects.size() << "\n";
 
 	imgHogar.load("casa.png");
+}
 
+void ofApp::setupLemmings()
+{
+	posx = 0;
+	posy = 0;
+	radioCirculo = 20;
+	//cargar spritesheet
+	playerSpriteImg.load("spritesheet.png");
+	//tamaño del jugador
+	playerSize = ofVec2f(28, 42);
+	playerSpriteOffset = ofVec2f(2, 4);
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
+{
+	if (appstate == EAppState::pelotas)
+	{
+		updatePelotas();
+	}
+	else if (appstate == EAppState::menu)
+	{
+		
+	}
+	else if (appstate == EAppState::lemmings)
+	{
+		updateLemmings();
+	}
+}
+
+void ofApp::updatePelotas()
 {
 	//mover les entidades
 	for (int i = 0; i < gameObjects.size(); i++)
@@ -49,50 +100,93 @@ void ofApp::update()
 	}
 }
 
-//--------------------------------------------------------------
-void ofApp::draw(){
-	ofBackground(ofColor::cornflowerBlue);
-
-	//dibujar los objetos del fondo como la casa
-	imgHogar.draw(200, ofGetHeight() - imgHogar.getHeight());
-
-	ofSetColor(240, 12, 12);
-	ofCircle(posx, posy, radioCirculo);
-
-	if (gameObjects.size() > 0)
+void ofApp::updateLemmings()
+{
+	//mover el sprite dependiendo de los inputs
+	if (w)
 	{
-		for (int i = 0; i < gameObjects.size(); i++)
+		posy -= 100 * ofGetLastFrameTime();
+		playerSpriteOffset = ofVec2f(2, 52);
+		
+	}
+	if (s)
+	{
+		posy += 100 * ofGetLastFrameTime();
+		playerSpriteOffset = ofVec2f(2, 4);
+	}
+	if (a)
+	{
+		posx -= 100 * ofGetLastFrameTime();
+		playerSpriteOffset = ofVec2f(2, 100);
+	}
+	if (d)
+	{
+		posx += 100 * ofGetLastFrameTime();
+		playerSpriteOffset = ofVec2f(34, 148);
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::draw()
+{
+	if (appstate == EAppState::pelotas)
+	{
+		ofBackground(ofColor::cornflowerBlue);
+		//dibujar los objetos del fondo como la casa
+		imgHogar.draw(200, ofGetHeight() - imgHogar.getHeight());
+
+		ofSetColor(240, 12, 12);
+
+		if (gameObjects.size() > 0)
 		{
-			gameObjects[i].draw();
+			for (int i = 0; i < gameObjects.size(); i++)
+			{
+				gameObjects[i].draw();
+			}
 		}
 	}
-
-
-
+	else if (appstate == EAppState::menu)
+	{
+		ofBackground(ofColor::darkGray);
+		mainmenu.draw();
+	}
+	else if (appstate == EAppState::lemmings)
+	{
+		ofBackground(ofColor::lightGray);
+		//ofCircle(posx, posy, radioCirculo);
+		//playerSpriteImg.draw(posx, posy);
+		playerSpriteImg.drawSubsection(posx, posy, 
+			playerSize.x, playerSize.y,
+			playerSpriteOffset.x, playerSpriteOffset.y);
+	}
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-
+void ofApp::keyPressed(int key)
+{
+	if (key == 'w') w = true;
+	if (key == 'a') a = true;
+	if (key == 's') s = true;
+	if (key == 'd') d = true;
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
+void ofApp::keyReleased(int key)
+{
+	if (key == 'w') w = false;
+	if (key == 'a') a = false;
+	if (key == 's') s = false;
+	if (key == 'd') d = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
 
-	posx = x;
-	posy = y;
-
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-	posx = x;
-	posy = y;
+
 }
 
 //--------------------------------------------------------------
@@ -132,6 +226,8 @@ void ofApp::windowResized(int w, int h){
 void ofApp::gotMessage(ofMessage msg){
 
 }
+
+
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 

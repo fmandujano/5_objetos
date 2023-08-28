@@ -3,12 +3,18 @@
 #include "ofMain.h"
 #include <vector>
 #include "Entity.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
+		void setupPelotas();
+		void setupLemmings();
 		void update();
+		void updatePelotas();
+		void updateLemmings();
+
 		void draw();
 
 		void keyPressed(int key);
@@ -24,8 +30,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 	//mis variables
-		float posx;
-		float posy;
+		
 
 		float gravity = 9.81f * 100; //escala a 100 px por metro
 
@@ -35,5 +40,26 @@ class ofApp : public ofBaseApp{
 
 		//casita de fondo
 		ofImage imgHogar;
+
+		//estados de la aplicacion
+		enum EAppState {
+			menu, pelotas, lemmings, max
+		} appstate ;
+
+		//cosas del UI
+		ofxPanel mainmenu;
+		ofxButton btnEjercicio1, btnEjercicio2;
+
+		void onBtn1Pressed();
+		void onBtn2Pressed();
+
+		//juego con inventario (lemmings)
+		ofImage playerSpriteImg;
+		float posx;
+		float posy;
+		ofVec2f playerSize;
+		ofVec2f playerSpriteOffset;
+		//inputs del jugador
+		bool w, s, a, d;
 
 };
