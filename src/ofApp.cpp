@@ -70,7 +70,10 @@ void ofApp::setupLemmings()
 	Entity veneno = Entity();
 	veneno.name = "BENENO";
 	inventory.push_back(veneno);
-	currItem = &hands;
+
+	inventoryIterator = inventory.begin(); //inicializar le iterador
+	//currItem = &inventory.back();  //back obtiene el ultimo item
+	std::cout << "begin: " << (*inventoryIterator).name << "\n";
 }
 
 //--------------------------------------------------------------
@@ -139,8 +142,7 @@ void ofApp::updateLemmings()
 		playerSpriteOffset = ofVec2f(34, 148);
 	}
 
-	//currItem = &inventory.front();  //front obtiene el primer item
-	currItem = &inventory.back();  //back obtiene el ultimo item
+
 }
 
 //--------------------------------------------------------------
@@ -183,8 +185,42 @@ void ofApp::draw()
 		//poner el nombre del item actual
 		ofSetColor(255, 255, 0);
 
-		uiFont.drawString( currItem==nullptr?"NULL":currItem->name.c_str(), posx, posy);
+		//uiFont.drawString( currItem==nullptr?"NULL":currItem->name.c_str(), posx, posy);
+		uiFont.drawString( (*inventoryIterator).name.c_str(), posx, posy);
 	}
+}
+
+void ofApp::PrevItem()
+{	
+	//si estamos en el inicio de la lista, ir al final
+	
+	if (inventoryIterator == inventory.begin())
+	{
+		puts("inicio, moviendo al final");
+		inventoryIterator = inventory.end();
+		--inventoryIterator;
+	}
+	else
+	{
+		--inventoryIterator;
+		if (inventoryIterator == inventory.begin())
+		{
+			puts("llegando al inicio");
+		}
+	}
+	
+	//inventoryIterator = inventory.begin();
+	std::cout << "item: " << (*inventoryIterator).name << "\n";
+}
+void ofApp::NextItem()
+{
+	++inventoryIterator;
+	if (inventoryIterator == inventory.end())
+	{
+		inventoryIterator = inventory.begin();
+	}
+
+	std::cout << "item: " << (*inventoryIterator).name << "\n";
 }
 
 //--------------------------------------------------------------
@@ -195,17 +231,17 @@ void ofApp::keyPressed(int key)
 	if (key == 's') s = true;
 	if (key == 'd') d = true;
 
+	//inputs para navegar el inventario
 	if (appstate == EAppState::lemmings)
 	{
 		//inventory
 		if (key == 57357)
 		{
-			std::cout << "item anterior " << key << "\n";
-
+			PrevItem();
 		}
 		if (key == 57359)
 		{
-			std::cout << "item siguiente " << key << "\n";
+			NextItem();
 		}
 	}
 
